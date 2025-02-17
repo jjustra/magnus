@@ -41,6 +41,7 @@ class Main(object):
         self.grab_x = 0
         self.grab_y = 0
         self.grab_lock = False
+        self.grab_enable = True
 
     def handle_shutdown(self, app):
         if self.started_by_keypress:
@@ -81,6 +82,9 @@ class Main(object):
             self.position_lock = True
             self.position_x = int(args[i+1])
             self.position_y = int(args[i+2])
+
+        if '--no-grab' in args:
+            self.grab_enable = False
 
         # Override refresh rate on command line
         for arg in args:
@@ -211,6 +215,8 @@ class Main(object):
         self.set_zoom(zoom)
 
     def grab_on(self, a,b):
+        if not self.grab_enable:
+            return
         display = Gdk.Display.get_default()
         (screen, x, y, modifier) = display.get_pointer()
         self.grab_lock = True
