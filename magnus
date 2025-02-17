@@ -70,7 +70,7 @@ class Main(object):
             print("  --position x y")
             print("    Set center of view, disable mouse tracking")
             print("  --drag")
-            print("    Enables drag ability, when --position is used")
+            print("    Enables drag ability of main view, when --position is used")
             return 0
 
         if "--force-refresh" in args:
