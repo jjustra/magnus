@@ -69,6 +69,8 @@ class Main(object):
             print("      even if the mouse has not moved")
             print("  --position x y")
             print("    Set center of view, disable mouse tracking")
+            print("  --no-grab")
+            print("    Disable grab ability, when --position is used")
             return 0
 
         if "--force-refresh" in args:
