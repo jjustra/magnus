@@ -41,7 +41,7 @@ class Main(object):
         self.grab_x = 0
         self.grab_y = 0
         self.grab_lock = False
-        self.grab_enable = True
+        self.grab_enable = False
 
     def handle_shutdown(self, app):
         if self.started_by_keypress:
@@ -69,8 +69,8 @@ class Main(object):
             print("      even if the mouse has not moved")
             print("  --position x y")
             print("    Set center of view, disable mouse tracking")
-            print("  --no-grab")
-            print("    Disable grab ability, when --position is used")
+            print("  --grab")
+            print("    Enables grab ability, when --position is used")
             return 0
 
         if "--force-refresh" in args:
@@ -85,8 +85,8 @@ class Main(object):
             self.position_x = int(args[i+1])
             self.position_y = int(args[i+2])
 
-        if '--no-grab' in args:
-            self.grab_enable = False
+        if '--grab' in args:
+            self.grab_enable = True
 
         # Override refresh rate on command line
         for arg in args:
