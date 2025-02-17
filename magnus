@@ -38,10 +38,10 @@ class Main(object):
         self.position_lock = False
         self.position_x = 0
         self.position_y = 0
-        self.grab_x = 0
-        self.grab_y = 0
-        self.grab_lock = False
-        self.grab_enable = False
+        self.drag_x = 0
+        self.drag_y = 0
+        self.drag_lock = False
+        self.drag_enable = False
 
     def handle_shutdown(self, app):
         if self.started_by_keypress:
@@ -69,8 +69,8 @@ class Main(object):
             print("      even if the mouse has not moved")
             print("  --position x y")
             print("    Set center of view, disable mouse tracking")
-            print("  --grab")
-            print("    Enables grab ability, when --position is used")
+            print("  --drag")
+            print("    Enables drag ability, when --position is used")
             return 0
 
         if "--force-refresh" in args:
@@ -85,8 +85,8 @@ class Main(object):
             self.position_x = int(args[i+1])
             self.position_y = int(args[i+2])
 
-        if '--grab' in args:
-            self.grab_enable = True
+        if '--drag' in args:
+            self.drag_enable = True
 
         # Override refresh rate on command line
         for arg in args:
@@ -184,8 +184,8 @@ class Main(object):
             Keybinder.bind("<Alt><Super>minus", self.zoom_out, zoom)
 
         # bind mouse drag
-        self.w.connect("button-press-event", self.grab_on)
-        self.w.connect("button-release-event", self.grab_off)
+        self.w.connect("button-press-event", self.drag_on)
+        self.w.connect("button-release-event", self.drag_off)
 
         # and, go
         self.w.show_all()
@@ -216,17 +216,17 @@ class Main(object):
         zoom.set_active(current_index + 1)
         self.set_zoom(zoom)
 
-    def grab_on(self, a,b):
-        if not self.grab_enable:
+    def drag_on(self, a,b):
+        if not self.drag_enable:
             return
         display = Gdk.Display.get_default()
         (screen, x, y, modifier) = display.get_pointer()
-        self.grab_lock = True
-        self.grab_x = x
-        self.grab_y = y
+        self.drag_lock = True
+        self.drag_x = x
+        self.drag_y = y
 
-    def grab_off(self, a,b):
-        self.grab_lock = False
+    def drag_off(self, a,b):
+        self.drag_lock = False
 
     def read_window_decorations_size(self, win, alloc):
         sz = self.w.get_size()
@@ -295,23 +295,23 @@ class Main(object):
     def poll(self, force_refresh=False):
         if self.position_lock:
 
-            if self.grab_lock:
-    			# if grabbed, move position lock
+            if self.drag_lock:
+    			# if dragged, move position lock
 
                 display = Gdk.Display.get_default()
                 (screen, x, y, modifier) = display.get_pointer()
 
                 # get delta
-                dx = (self.grab_x - x) // self.zoomlevel
-                dy = (self.grab_y - y) // self.zoomlevel
+                dx = (self.drag_x - x) // self.zoomlevel
+                dy = (self.drag_y - y) // self.zoomlevel
 
                 # apply delta
                 self.position_x += dx
                 self.position_y += dy
 
-                # reset grab start to current position
-                self.grab_x = x
-                self.grab_y = y
+                # reset drag start to current position
+                self.drag_x = x
+                self.drag_y = y
 
             # use coordinates from position lock
             x,y = self.position_x,self.position_y
