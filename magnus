@@ -42,6 +42,21 @@ class Main(object):
         self.drag_y = 0
         self.drag_lock = False
         self.drag_enable = False
+        self.max_x = 0
+        self.max_y = 0
+
+    def set_max_dimensions(self):
+        # ripped directly from https://stackoverflow.com/a/65894179/3569534
+        w = 0
+        h = 0
+        screen = self.w.get_screen().get_display()
+        for x in range(0, screen.get_n_monitors()):
+            w += screen.get_monitor(x).get_geometry().width
+            if (h < screen.get_monitor(x).get_geometry().height):
+                h = screen.get_monitor(x).get_geometry().height
+        print(f"Max x is {w}, max y is {h}")
+        self.max_x = w
+        self.max_y = h
 
     def handle_shutdown(self, app):
         if self.started_by_keypress:
@@ -139,6 +154,7 @@ class Main(object):
         self.w.connect("size-allocate", self.read_window_decorations_size)
         devman = self.w.get_screen().get_display().get_device_manager()
         self.pointer = devman.get_client_pointer()
+        self.set_max_dimensions()
 
         # the zoom chooser
         zoom = Gtk.ComboBoxText.new()
@@ -315,6 +331,8 @@ class Main(object):
 
             # use coordinates from position lock
             x,y = self.position_x,self.position_y
+            x = min(max(x, 0), self.max_x - 1)
+            y = min(max(y, 0), self.max_y - 1)
 
         else:
 			# get new coordinates
