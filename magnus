@@ -296,7 +296,7 @@ class Main(object):
         if self.position_lock:
 
             if self.drag_lock:
-    			# if dragged, move position lock
+                # if dragged, move position lock
 
                 display = Gdk.Display.get_default()
                 (screen, x, y, modifier) = display.get_pointer()
@@ -317,7 +317,7 @@ class Main(object):
             x,y = self.position_x,self.position_y
 
         else:
-			# get new coordinates
+            # get new coordinates
             display = Gdk.Display.get_default()
             (screen, x, y, modifier) = display.get_pointer()
             if x == self.last_x and y == self.last_y:
